@@ -10,11 +10,12 @@ const pool = new Pool({
 
 const getMerchants = () => {
   return new Promise(function (resolve, reject) {
-    pool.query('SELECT * FROM user_details', (error, results) => {
+    pool.query('SELECT * FROM user_details ORDER BY id ASC', (error, results) => {
       if (error) {
         reject(error);
       }
-      resolve(results);
+      console.log(results);
+      resolve(results.rows);
     });
   });
 };

@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
     });
 });
 
-app.post('/user_details', (req, res) => {
+app.post('/merchants', (req, res) => {
   user_details
     .createMerchant(req.body)
     .then((response) => {
@@ -35,7 +35,7 @@ app.post('/user_details', (req, res) => {
     });
 });
 
-app.delete('/user_details/:id', (req, res) => {
+app.delete('/merchants/:id', (req, res) => {
   user_details
     .deleteMerchant(req.params.id)
     .then((response) => {
