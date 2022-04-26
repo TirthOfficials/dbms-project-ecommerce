@@ -14,7 +14,6 @@ const getMerchants = () => {
       if (error) {
         reject(error);
       }
-      console.log(results);
       resolve(results.rows);
     });
   });
@@ -25,7 +24,7 @@ const createMerchant = (body) => {
     const { user_id, f_name, l_name, phone_no1, phone_no2, email_id } = body;
 
     pool.query(
-      'INSERT INTO user_details (user_id, f_name, l_name, phone_no1, phone_no2, email_id) VALUES ($user_id,, $f_name, $l_name, $phone_no1, $phone_no2, $email_id) RETURNING *',
+      'INSERT INTO user_details (user_id, f_name, l_name, phone_no1, phone_no2, email_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
       [user_id, f_name, l_name, phone_no1, phone_no2, email_id],
       (error, results) => {
         if (error) {

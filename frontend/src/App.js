@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 function App() {
-  const [user_details, setMerchants] = useState(false);
+  const [merchants, setMerchants] = useState(false);
 
   useEffect(() => {
     getMerchant();
@@ -58,7 +58,7 @@ function App() {
 
   return (
     <div>
-      {user_details ? user_details : 'There is no data available'}
+      {merchants ? merchants : 'There is no data available'}
       <br />
       <button onClick={createMerchant}>Add</button>
       <br />
