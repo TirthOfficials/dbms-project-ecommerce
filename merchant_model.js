@@ -3,14 +3,25 @@ const Pool = require('pg').Pool;
 const pool = new Pool({
   user: 'my_user',
   host: 'localhost',
-  database: 'my_database',
+  database: 'project',
   password: 'root',
   port: 5432,
 });
 
 const getMerchants = () => {
   return new Promise(function (resolve, reject) {
-    pool.query('SELECT * FROM user_details ORDER BY id ASC', (error, results) => {
+    pool.query('SELECT * FROM user_details', (error, results) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(results.rows);
+    });
+  });
+};
+
+const productFilter = () => {
+  return new Promise(function (resolve, reject) {
+    pool.query(`select product_filter(200,'post')`, (error, results) => {
       if (error) {
         reject(error);
       }
@@ -21,17 +32,17 @@ const getMerchants = () => {
 
 const createMerchant = (body) => {
   return new Promise(function (resolve, reject) {
-    const { user_id, f_name, l_name, phone_no1, phone_no2, email_id } = body;
+    const { name, email } = body;
 
     pool.query(
-      'INSERT INTO user_details (user_id, f_name, l_name, phone_no1, phone_no2, email_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-      [user_id, f_name, l_name, phone_no1, phone_no2, email_id],
+      'INSERT INTO merchants (name, email) VALUES ($1, $2) RETURNING *',
+      [name, email],
       (error, results) => {
         if (error) {
           reject(error);
         }
         resolve(
-          `Data added: ${JSON.stringify(
+          `A new merchant has been added added: ${JSON.stringify(
             results.rows[0]
           )}`
         );
@@ -40,18 +51,18 @@ const createMerchant = (body) => {
   });
 };
 
-const deleteMerchant = (user_details) => {
+const deleteMerchant = (merchantId) => {
   return new Promise(function (resolve, reject) {
-    const user_id = parseInt(user_details);
+    const id = parseInt(merchantId);
 
     pool.query(
-      'DELETE FROM user_details WHERE id = $1',
-      [user_id],
+      'DELETE FROM merchants WHERE id = $1',
+      [id],
       (error, results) => {
         if (error) {
           reject(error);
         }
-        resolve(`Deleted with ID: ${user_id}`);
+        resolve(`Merchant deleted with ID: ${id}`);
       }
     );
   });
@@ -61,4 +72,5 @@ module.exports = {
   getMerchants,
   createMerchant,
   deleteMerchant,
+  productFilter,
 };

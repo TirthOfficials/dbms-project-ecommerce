@@ -1,10 +1,13 @@
+// import { response } from 'express';
 import React, { useState, useEffect } from 'react';
 
 function App() {
   const [merchants, setMerchants] = useState(false);
+  const [filter, setFilter] = useState(false);
 
   useEffect(() => {
     getMerchant();
+    product_filter();
   }, []);
 
   function getMerchant() {
@@ -16,21 +19,26 @@ function App() {
         setMerchants(data);
       });
   }
+  function product_filter() {
+    fetch('http://localhost:3001/filter')
+      .then((response) => {
+        return response.text();
+      })
+      .then((data) => {
+        setMerchants(data);
+      });
+  }
 
   function createMerchant() {
-    let user_id = prompt('Enter User_id: ');
-    let f_name = prompt('Enter First Name');
-    let l_name = prompt('Enter Last Name');
-    let phone_no1 = prompt('Enter Phone No.1');
-    let phone_no2 = prompt('Enter Phone No.2');
-    let email_id = prompt('Enter Email Id');
+    let name = prompt('Enter merchant name');
+    let email = prompt('Enter merchant email');
 
-    fetch('http://localhost:3001/merchant_model', {
+    fetch('http://localhost:3001/merchants', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user_id, f_name, l_name, phone_no1, phone_no2, email_id }),
+      body: JSON.stringify({ name, email }),
     })
       .then((response) => {
         return response.text();
@@ -42,7 +50,7 @@ function App() {
   }
 
   function deleteMerchant() {
-    let id = prompt('Enter Id');
+    let id = prompt('Enter merchant id');
 
     fetch(`http://localhost:3001/merchants/${id}`, {
       method: 'DELETE',
@@ -58,11 +66,13 @@ function App() {
 
   return (
     <div>
-      {merchants ? merchants : 'There is no data available'}
+      {merchants ? merchants : 'There is no merchant data available'}
       <br />
       <button onClick={createMerchant}>Add</button>
       <br />
       <button onClick={deleteMerchant}>Delete</button>
+      <h1>product filter</h1>
+      {filter ? 'There is no filter data available' : filter}
     </div>
   );
 }

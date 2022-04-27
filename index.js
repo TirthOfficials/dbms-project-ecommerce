@@ -1,7 +1,8 @@
+const { response } = require('express');
 const express = require('express');
 const app = express();
 const port = 3001;
-const user_details = require('./merchant_model');
+const merchant_model = require('./merchant_model');
 app.use(express.json());
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
@@ -13,8 +14,19 @@ app.use(function (req, res, next) {
   next();
 });
 
+app.get('/filter', (req, res) => {
+  merchant_model
+    .productFilter()
+    .then((response) => {
+      res.status(200).send(response);
+    })
+    .catch((error) => {
+      res.status(500).send(error);
+    });
+});
+
 app.get('/', (req, res) => {
-  user_details
+  merchant_model
     .getMerchants()
     .then((response) => {
       res.status(200).send(response);
@@ -25,7 +37,7 @@ app.get('/', (req, res) => {
 });
 
 app.post('/merchants', (req, res) => {
-  user_details
+  merchant_model
     .createMerchant(req.body)
     .then((response) => {
       res.status(200).send(response);
@@ -36,7 +48,7 @@ app.post('/merchants', (req, res) => {
 });
 
 app.delete('/merchants/:id', (req, res) => {
-  user_details
+  merchant_model
     .deleteMerchant(req.params.id)
     .then((response) => {
       res.status(200).send(response);
